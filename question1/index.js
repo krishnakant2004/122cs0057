@@ -24,8 +24,7 @@ const NUMBER_TYPE_ENDPOINTS = {
   r: 'rand'    
 };
 
-const ACCESS_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJNYXBDbGFpbXMiOnsiZXhwIjoxNzQ2MjgwNTg1LCJpYXQiOjE3NDYyODAyODUsImlzcyI6IkFmZm9yZG1lZCIsImp0aSI6IjZlM2YzOTc2LWExZjgtNDYzMi05ZmMxLWE0NzI5YjE0OGI4OSIsInN1YiI6ImtyaXNobmE5NjY5a2FudGRpbmthckBnbWFpbC5jb20ifSwiZW1haWwiOiJrcmlzaG5hOTY2OWthbnRkaW5rYXJAZ21haWwuY29tIiwibmFtZSI6ImtyaXNobmEiLCJyb2xsTm8iOiIxMjJjczAwNTciLCJhY2Nlc3NDb2RlIjoiYnpiQ256IiwiY2xpZW50SUQiOiI2ZTNmMzk3Ni1hMWY4LTQ2MzItOWZjMS1hNDcyOWIxNDhiODkiLCJjbGllbnRTZWNyZXQiOiJrdFR4WkhCZHBOUWNId1J0In0.JRtnWGF7610MeDgPJu-XzlRO-7sA6WV_Q-eBHKH3_iM"; // (full token here)
-
+const ACCESS_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJNYXBDbGFpbXMiOnsiZXhwIjoxNzQ2Mjg0NDY5LCJpYXQiOjE3NDYyODQxNjksImlzcyI6IkFmZm9yZG1lZCIsImp0aSI6IjZlM2YzOTc2LWExZjgtNDYzMi05ZmMxLWE0NzI5YjE0OGI4OSIsInN1YiI6ImtyaXNobmE5NjY5a2FudGRpbmthckBnbWFpbC5jb20ifSwiZW1haWwiOiJrcmlzaG5hOTY2OWthbnRkaW5rYXJAZ21haWwuY29tIiwibmFtZSI6ImtyaXNobmEiLCJyb2xsTm8iOiIxMjJjczAwNTciLCJhY2Nlc3NDb2RlIjoiYnpiQ256IiwiY2xpZW50SUQiOiI2ZTNmMzk3Ni1hMWY4LTQ2MzItOWZjMS1hNDcyOWIxNDhiODkiLCJjbGllbnRTZWNyZXQiOiJrdFR4WkhCZHBOUWNId1J0In0.lfw7ww6ptvppPDowxeiDUF-ErKsgNEegQYcBVU7WRf8";
 async function fetchNumberFromTestServer(numberType) {
   const endpoint = NUMBER_TYPE_ENDPOINTS[numberType];
   const url = `http://20.244.56.144/evaluation-service/${endpoint}`;
@@ -48,11 +47,11 @@ async function fetchNumberFromTestServer(numberType) {
 //add number to window
 function addNumberToWindow(number) {
   if (!numberWindow.includes(number)) {
-    if (numberWindow.length >= WINDOW_SIZE) {
+    numberWindow.concat(number)
+
+    while(numberWindow.length > WINDOW_SIZE) {
       numberWindow.shift(); // Remove oldest number (first element)
     }
-    // Add the new number to the end of the window
-    numberWindow.push(number);
   }
 }
 
@@ -78,18 +77,28 @@ app.get('/numbers/:numberType', async (req, res) => {
   }
 
   try {
-    const windowPrevState = [...numberWindow];
+    //current window state .
+    const currentWindowState = numberWindow;
     
+    //fetch new numbers.
     const fetchedNumber = await fetchNumberFromTestServer(numberType);
-    
+
+    //add new number to window.
     addNumberToWindow(fetchedNumber);
+
+
+    //after adding new numbers window changed
+    const newWindowState = numberWindow;
+
+    //concate current and new window state
+    const numberss = currentWindowState.concat(fetchedNumber);
     
     const average = calculateAverage();
     
     const response = {
-      windowPrevState: windowPrevState,
-      windowCurrState: [...numberWindow],
-      numbers: [fetchedNumber], 
+      windowPrevState: currentWindowState,
+      windowCurrState: newWindowState,
+      numbers: numberss, 
       avg: average.toFixed(2) 
     };
     
