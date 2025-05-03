@@ -1,20 +1,16 @@
-// Import required modules
 const express = require('express');
 const axios = require('axios');
 const app = express();
 const PORT = process.env.PORT || 9876;
 
-// Constants
-const WINDOW_SIZE = 10; // Default window size, configurable
-const MAX_RESPONSE_TIME = 500; // Maximum response time in milliseconds
+// 
+const WINDOW_SIZE = 10; 
+const MAX_RESPONSE_TIME = 500; 
 
-// Data storage
+//  storage
 let numberWindow = [];
 
 
-
-
-// Middleware to parse JSON requests
 app.use(express.json());
 
 
