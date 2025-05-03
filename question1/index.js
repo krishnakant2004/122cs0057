@@ -20,7 +20,7 @@ app.use(express.json());
 
 
 //fetch number from test server
-const TEST_SERVER_BASE_URL = 'http://20.244.56.144/evaluation-service/'; // Replace with actual test server URL
+const TEST_SERVER_BASE_URL = 'http://20.244.56.144/evaluation-service/';
 const NUMBER_TYPE_ENDPOINTS = {
   p: 'primes',    
   f: 'fibo', 
